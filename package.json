@@ -14,10 +14,13 @@
   "devDependencies": {},
   "scripts": {
     "test": "pulp test",
-    "build": "pulp --watch build --to t.js",
+    "build": "pulp --watch --then \"cat shebang.sh command.js > t.js; chmod +x t.js\" build --to command.js",
     "testv": "pulp --watch test --main Test.Visual",
     "watch": "ls | entr node t.js"
   },
-  "author": "",
-  "license": "ISC"
+  "bin" : {
+    "assets" : "t.js"
+  },
+  "author": "Dominick Gendill",
+  "license": "MIT"
 }
