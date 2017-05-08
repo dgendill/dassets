@@ -1,0 +1,10 @@
+- name: development
+  paths:
+    - test/files/dev.txt
+- name: production
+  paths:
+    - test/files/production.txt
+- name: shared
+  paths:
+    - test/files/images
+    - test/files/js  

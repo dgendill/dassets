@@ -30,7 +30,7 @@ newtype AssetGroup = AssetGroup {
 }
 
 derive instance gAssetG :: Generic AssetGroup
-instance showAssetG :: Show AssetGroup where show (AssetGroup {name}) = name
+instance showAssetG :: Show AssetGroup where show (AssetGroup {name, list}) = name <> " (" <> show list <>")"
 instance eqAssetG :: Eq AssetGroup where eq = gEq
 
 -- instance monoidAssetG :: Monoid AssetGroup where

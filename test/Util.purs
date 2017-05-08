@@ -23,4 +23,4 @@ mainTests = do
     (isLeft notThere) `shouldEqual` true
 
     traverseFind "./" "testfile.txt" >>=
-      traverse_ (\r -> (trim r) `shouldEqual` "test")
+      (\r -> (trim r) `shouldEqual` "test")

@@ -3,33 +3,29 @@ module Assets.AssetManager where
 import Prelude
 import Assets.AssetPath
 import Assets.AssetGroup
-import Node.FS as FS
-import Node.FS.Async as Async
+import Control.Monad.Aff.Console as Affc
 import Assets.AssetGroup (AssetGroup(..))
 import Control.Monad.Aff (Aff, attempt, launchAff, makeAff, runAff)
-import Control.Monad.Aff.Console as Affc
 import Control.Monad.Aff.Class (liftAff)
 import Control.Monad.Eff (Eff, foreachE)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, logShow, log)
-import Control.Monad.Except (ExceptT(..), except, runExcept, runExceptT)
-import Control.Monad.Trans.Class (lift)
+import Control.Monad.Eff.Exception (EXCEPTION, error, throw)
+import Control.Monad.Except (ExceptT(..), except, runExcept, runExceptT, throwError)
 import Data.Array (find, foldM, foldMap, snoc)
 import Data.Either (Either(..), either)
-import Data.Eq (class Eq)
 import Data.Foldable (foldl)
-import Data.Foreign (F, Foreign, readArray, readString, toForeign)
+import Data.Foreign (F, Foreign, readArray, readString, renderForeignError, toForeign)
+import Data.Foreign.Index (readProp)
 import Data.Generic (class Generic, gEq, gShow)
+import Data.List.NonEmpty (toList)
 import Data.Maybe (Maybe)
-import Data.Monoid (class Monoid)
-import Data.Monoid.Conj (Conj(..))
-import Data.Semigroup (class Semigroup)
-import Data.String (joinWith)
+import Data.Newtype (unwrap)
 import Data.Traversable (traverse)
 import Data.YAML.Foreign.Decode (parseYAML)
 import Node.FS.Aff (stat, FS)
 import Test.Spec.Color (Color(..), colored)
-
+import Util (forM, traverseFindDeep, whenTrue)
 
 type AssetManager = Array AssetGroup
 
@@ -61,9 +57,6 @@ assetPathExists  = case _ of
   where
     checkExists path = pure <<< either (const false) (const true) =<< attempt (stat path)
 
-forM :: forall a m. (Monad m) => Array a -> (a -> m Unit) -> m Unit
-forM v fn = foldM (\a v' -> fn v') unit v
-
 listAll :: forall e. AssetManager -> Aff (fs :: FS, console :: CONSOLE | e) Unit
 listAll manager =
   forM manager (\(AssetGroup {name, list}) -> do
@@ -79,8 +72,27 @@ listAll manager =
     Affc.log $ ""
   )
 
-whenTrue :: forall a. Boolean -> a -> a -> a
-whenTrue isTrue tFn fFn =
-  if isTrue
-    then tFn
-    else fFn
+
+getUserAssets :: forall e. Aff (exception :: EXCEPTION, fs :: FS | e) AssetManager
+getUserAssets = do
+  file <- traverseFindDeep 5 "./" "project-assets.yml"
+  case (runExcept $ (parseYAML file) >>= readAssetManager) of
+    Right am -> pure am
+    Left err -> throwError $ error $ "Could not parse project-assets.yml: " <> (foldMap renderForeignError (toList err))
+
+readAssetPath :: Foreign -> F AssetPath
+readAssetPath f = readString f >>= (pure <<< File)
+
+readAssetGroup :: Foreign -> F AssetGroup
+readAssetGroup f = do
+  name <- readProp "name" f >>= readString
+  list <- readProp "paths" f >>= readArray >>= traverse readAssetPath
+  pure $ AssetGroup {name, list}
+
+readAssetManager :: Foreign -> F AssetManager
+readAssetManager f = readArray f >>= traverse readAssetGroup
+
+
+  -- case r of
+  --   Right fileContent ->
+  --   Left e -> throw e

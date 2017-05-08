@@ -2,16 +2,17 @@ module Test.Main where
 
 import Prelude
 import Assets
-import Control.Monad.Aff (Aff)
+import Test.Util as Util
+import Control.Monad.Aff (Aff, attempt)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log, logShow)
+import Data.Either (isRight)
 import Data.Maybe (Maybe(..))
 import Test.Spec (it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (RunnerEffects, run)
-import Test.Util as Util
 
 main :: forall e. Eff (RunnerEffects _) Unit
 main = run [consoleReporter] do
@@ -25,13 +26,15 @@ main = run [consoleReporter] do
     assetsGroupExists shared >>= shouldEqual true
     assetsGroupExists missingFileAssetGroup >>= shouldEqual false
 
-  Util.mainTests
+  it "can read the project-assets.yml file" $ do
+    a <- attempt $ getUserAssets
+    (isRight a) `shouldEqual` true
 
+  Util.mainTests
 
 
 dirAssetPath :: AssetPath
 dirAssetPath = Dir "test/files/js/"
-
 
 shared :: AssetGroup
 shared = assetGroup "shared" [
@@ -39,14 +42,12 @@ shared = assetGroup "shared" [
     dirAssetPath
   ]
 
-
 missingFileAssetGroup :: AssetGroup
 missingFileAssetGroup = assetGroup "shared" [
     Dir "test/files/images",
     Dir "not there",
     Dir "test/files/images"
   ]
-
 
 tassets :: AssetManager
 tassets = [
