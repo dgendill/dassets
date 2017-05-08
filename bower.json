@@ -1,0 +1,23 @@
+{
+  "name": "assets",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "^3.0.0",
+    "purescript-console": "^3.0.0",
+    "purescript-yaml": "git://github.com/dgendill/purescript-yaml#master",
+    "purescript-node-fs": "^4.0.0",
+    "purescript-generics": "^4.0.0",
+    "purescript-spec": "^1.0.0",
+    "purescript-node-fs-aff": "^4.0.0",
+    "purescript-yargs": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0",
+    "purescript-spec": "^1.0.0"
+  }
+}
