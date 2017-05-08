@@ -8,6 +8,7 @@ import Node.Yargs.Setup
 import Node.FS as FS
 import Node.FS.Async as Async
 import Control.Monad.Aff (Aff, attempt, launchAff, makeAff)
+import Control.Monad.Aff.Console as Affc
 import Control.Monad.Aff.Class (liftAff)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, logShow, log)
@@ -39,22 +40,26 @@ setup = """
 readAssets :: F (Array String)
 readAssets = (traverse readString) =<< readArray =<< parseYAML setup
 
-app :: forall eff. Array String -> Boolean -> Eff (console :: CONSOLE | eff) Unit
-app [] _     = pure unit
-app ss false = logShow ss
-app ss true  = logShow (reverse ss)
+--app :: forall e. Eff (fs :: FS, console :: CONSOLE, exception :: EXCEPTION, fs :: FS | e) Unit
+app = void $ launchAff $ do
 
-main :: forall e. Eff (exception :: EXCEPTION, fs :: FS, console :: CONSOLE | e) Unit
+  Affc.log "---------"
+  Affc.log "---------"
+  getUserAssets >>= listAll
+  Affc.log ""
+
+-- main :: forall e. Eff (exception :: EXCEPTION, fs :: FS, console :: CONSOLE | e) Unit
 main = do
   let
     setup =
       usage "$0" <>
-      example "$0 list" "list all assets in all groups"
+      example "$0 -l" "list all assets in all groups"
 
+  app
 
-  runY setup $
-    app <$> yarg "l" ["list"] (Just "A word") (Left []) false
-        <*> flag "r" []       (Just "Reverse the words")
+  -- runY setup $
+  --   app <$> yarg "l" ["list"] (Nothing) (Left []) false
+        -- <*> flag "r" []       (Just "Reverse the words")
 
     -- app <$> yarg "w" ["word"] (Just "A word") (Right "At least one word is required") false
     --     <*> flag "r" []       (Just "Reverse the words")

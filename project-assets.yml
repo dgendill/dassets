@@ -7,4 +7,4 @@
 - name: shared
   paths:
     - test/files/images
-    - test/files/js  
+    - test/files/js

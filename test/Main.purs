@@ -2,8 +2,9 @@ module Test.Main where
 
 import Prelude
 import Assets
+import Test.AssetManager as AssetManagerTest
 import Test.Util as Util
-import Control.Monad.Aff (Aff, attempt)
+import Control.Monad.Aff (Aff, attempt, launchAff)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE, log, logShow)

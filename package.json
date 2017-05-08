@@ -1,0 +1,23 @@
+{
+  "name": "assets",
+  "private":true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "t.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "js-yaml": "^3.8.3",
+    "yargs": "^8.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "pulp test",
+    "build": "pulp --watch build --to t.js",
+    "testv": "pulp --watch test --main Test.Visual",
+    "watch": "ls | entr node t.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

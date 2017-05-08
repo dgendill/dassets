@@ -5,6 +5,8 @@ import Assets
 import Control.Monad.Aff (attempt, launchAff)
 import Control.Monad.Aff.Console (logShow)
 
-main = launchAff $ do
+main = mainVisual
+
+mainVisual = void $ launchAff $ do
   a <- attempt $ getUserAssets
   logShow a
