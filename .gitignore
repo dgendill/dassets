@@ -8,3 +8,5 @@
 /.psa*
 /t.js
 /notes.txt
+/build.js
+/command.js

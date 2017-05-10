@@ -1,9 +1,11 @@
-- name: development
+# - name: development
+#   paths:
+#     - a
+- name: release
   paths:
-    - test/files/dev.txt
-- name: production
-  paths:
-    - test/files/production.txt
+    - test/files/images
+    - test/files/js
+    - test/files/onetwo
 - name: shared
   paths:
     - test/files/images

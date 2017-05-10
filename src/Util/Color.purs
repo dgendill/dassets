@@ -1,4 +1,4 @@
-module Color where
+module Util.Color where
 
 import Prelude ((<<<))
 

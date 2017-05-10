@@ -1,4 +1,4 @@
-module Util where
+module Util.General where
 
 import Prelude
 import Node.FS.Aff
@@ -7,7 +7,9 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error, throw)
 import Control.Monad.Except (throwError)
 import Data.Array (foldM, init)
+import Data.Bifunctor (class Bifunctor, lmap)
 import Data.Either (Either(..))
+import Data.Function.Uncurried (runFn1)
 import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), joinWith, split)
 import Data.Traversable (traverse)
@@ -42,3 +44,26 @@ whenTrue isTrue tFn fFn =
   if isTrue
     then tFn
     else fFn
+
+meither :: forall a b. Maybe a -> b -> Either b a
+meither a b = case a of
+  Just aa -> Right aa
+  Nothing -> Left b
+
+maybeFail :: forall a b. String -> Maybe a -> Either String a
+maybeFail s m = case m of
+  Just mm -> Right mm
+  Nothing -> Left s
+
+failWith :: forall f c. (Bifunctor f) => String -> f String c -> f String c
+failWith s = lmap (\a -> s)
+
+failAppend :: forall f c. (Bifunctor f) => String -> f String c -> f String c
+failAppend s = lmap (_ <> s)
+
+failPrepend :: forall f c. (Bifunctor f) => String -> f String c -> f String c
+failPrepend s = lmap (s <> _)
+
+-- glob :: forall e. String -> Aff (fs :: FS | e) Array FilePath
+-- glob s = runFn1globImpl s
+--

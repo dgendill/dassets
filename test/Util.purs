@@ -2,7 +2,7 @@ module Test.Util where
 
 import Prelude
 import Assets
-import Util
+import Util.General
 import Control.Monad.Aff (Aff, attempt)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)

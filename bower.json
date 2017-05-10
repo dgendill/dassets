@@ -14,7 +14,9 @@
     "purescript-generics": "^4.0.0",
     "purescript-spec": "^1.0.0",
     "purescript-node-fs-aff": "^4.0.0",
-    "purescript-yargs": "^3.0.0"
+    "purescript-yargs": "^3.0.0",
+    "purescript-argonaut": "^3.0.0",
+    "purescript-node-process": "^4.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0",
