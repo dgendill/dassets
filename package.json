@@ -1,9 +1,9 @@
 {
-  "name": "assets",
+  "name": "dassets",
   "private": true,
   "version": "0.1.0",
-  "description": "Command line tool to track list of files and directories grouped by name, and determine if any are missing.",
-  "main": "command.js",
+  "description": "Command line tool to group lists of files and directories by name and determine if any are missing.",
+  "main": "dassets.js",
   "directories": {},
   "dependencies": {
     "js-yaml": "^3.8.3",
@@ -12,12 +12,12 @@
   "devDependencies": {},
   "scripts": {
     "test": "pulp test",
-    "build": "pulp --watch --then \"cat shebang.sh build.js > command.js; chmod +x command.js\" build --to build.js",
+    "build": "pulp --watch --then \"cat shebang.sh build.js > dassets.js; chmod +x dassets.js\" build --to build.js",
     "testv": "pulp --watch test --main Test.Visual",
     "watch": "ls | entr node command.js"
   },
   "bin": {
-    "assets": "command.js"
+    "assets": "dassets.js"
   },
   "author": "Dominick Gendill",
   "license": "MIT"

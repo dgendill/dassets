@@ -1,3 +1,4 @@
+# dassets
 
 Projects that are deployed across different channels often require one-off assets for each channel.  For example, the same game could be deployed on a website, on Android, or as a Facebook app.  As the number of channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize these files and determine if any are missing.
 
@@ -13,21 +14,21 @@ Projects that are deployed across different channels often require one-off asset
 2. Provide a command line interface that will answer these questions.
 
   - What assets are required by a certain channel?
-    assets --in [channel name] --in [channel name]
+    dassets --in [channel name] --in [channel name]
 
   - Do all of the assets exist?  Where some files renamed or deleted?
-    assets --in [channel name] --missing
+    dassets --in [channel name] --missing
 
 3. Enable installation via a global npm package.
 
 ## Install
 
-npm install -g assets
+`npm install -g dassets`
 
 ## project-assets.yml
 
 The project-assets.yml file should contain a list of objects that have "name" and "paths" properties. `name` is a string, and
-paths is an array. You can generate a new config file using `assets --create` or paste the following in project-assets.yml
+paths is an array. You can generate a new config file using `dassets --create` or paste the following in project-assets.yml
 manually:
 
 ```yaml
@@ -43,7 +44,7 @@ manually:
 ## Command Line Referrence
 
 ```
-command.js [-i name] [-m]
+dassets [-i name] [-m]
 
 Before using, you should create project-assets.yml file in project root and use
 command.js anywhere above it.
@@ -57,9 +58,9 @@ Options:
                already exist                                         [boolean]
 
 Examples:
-command.js                          list all assets in all groups
-command.js -m                       show missing assets in all groups
-command.js -i production            list all assets in the 'production' group
-command.js -i production -i dev -m  list all missing assets in the
-                                    'production' and 'dev' groups
+dassets                          list all assets in all groups
+dassets -m                       show missing assets in all groups
+dassets -i production            list all assets in the 'production' group
+dassets -i production -i dev -m  list all missing assets in the
+                                 'production' and 'dev' groups
 ```

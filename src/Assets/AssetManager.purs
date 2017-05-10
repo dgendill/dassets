@@ -69,8 +69,8 @@ listOne onlyDeleted (ag@AssetGroup {name, list}) = do
     case Tuple exists onlyDeleted of
       (Tuple true false) -> do
         let fn = defer \_ -> Affc.log $ colored Green $ case path of
-                   Dir  d -> "  dir:" <> d
-                   File f -> "  fil:" <> f
+                   Dir  d -> "  " <> d
+                   File f -> "  " <> f
 
         pure (status {
             io = snoc status.io fn,
@@ -79,8 +79,8 @@ listOne onlyDeleted (ag@AssetGroup {name, list}) = do
           })
       (Tuple false _) -> do
         let fn = defer \_ -> Affc.log $ colored Fail $ case path of
-                   Dir  d -> "  missing dir:" <> d
-                   File f -> "  missing fil:" <> f
+                   Dir  d -> "  missing:" <> d
+                   File f -> "  missing:" <> f
 
         pure (status {
           io = snoc status.io fn,
@@ -99,10 +99,9 @@ listAll onlyDeleted manager =
 
     case Tuple status onlyDeleted of
       (Tuple { all : 0 }        _) -> Affc.log $ "There are no assets in group '" <> name <> "'"
-      (Tuple { missing : 0 } true) ->
-        if length manager == 1
-          then Affc.log $ (colored Green) "  OK." <> " Group '" <> name <> "' has all assets"
-          else pure unit
+      (Tuple { missing : 0 } true) -> do
+        Affc.log $ "- " <> name
+        Affc.log $ (colored Green) "  OK." <> " Group '" <> name <> "' has all assets"
       _ -> do
         Affc.log $ "- " <> name
         traverse_ force status.io
