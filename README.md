@@ -1,31 +1,28 @@
-# dassets
+## dassets
 
-Projects that are deployed across different channels often require one-off assets for each channel.  For example, the same game could be deployed on a website, on Android, or as a Facebook app.  As the number of channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize these files and determine if any are missing.
+Projects deployed across multiple channels often require one-off assets for each channel.  For example, game could be distributed on a website, on Android, or as a Facebook app.  As the number of distribution channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize files and determine if any are missing.
 
 * [Project Goals](#project-goals)
 * [Install](#install)
 * [project-assets.yml](#project-assets-yml)
 * [Command Line Referrence](#command-line-reference)
 
-# Project Goals
+## Project Goals
 
-1. Define a configuration file for listing project assets and grouping them by name.
+1. Define a configuration file for listing project assets and grouping them by channel name.
 
 2. Provide a command line interface that will answer these questions.
-
-  - What assets are required by a certain channel?
-    dassets --in [channel name] --in [channel name]
-
-  - Do all of the assets exist?  Where some files renamed or deleted?
-    dassets --in [channel name] --missing
-
+  * What assets are required by a channel?
+    `dassets --in [channel name] --in [channel name]`
+  * Do all of the assets exist?  Where some files renamed or deleted?
+    `dassets --in [channel name] --missing`
 3. Enable installation via a global npm package.
 
 ## Install
 
 `npm install -g dassets`
 
-You can also checkout the repo and then run 'npm install -g' in the project root.
+You can also checkout the repo and then run `npm install -g` in the project root.
 
 ## project-assets.yml
 
@@ -60,9 +57,9 @@ Options:
                already exist                                         [boolean]
 
 Examples:
-dassets                          list all assets in all groups
-dassets -m                       show missing assets in all groups
-dassets -i production            list all assets in the 'production' group
+dassets                          list all assets in all channels
+dassets -m                       show missing assets in all channels
+dassets -i production            list all assets in the 'production' channel
 dassets -i production -i dev -m  list all missing assets in the
-                                 'production' and 'dev' groups
+                                 'production' and 'dev' channels
 ```

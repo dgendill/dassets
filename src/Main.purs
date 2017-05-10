@@ -92,8 +92,8 @@ app names onlyDeleted generate = case generate of
               case head $ filter (\a -> (groupName a) == name) groups of -- (\(AssetGroup r) -> (r.name == groupName)) groups of
                 Just a -> listAll onlyDeleted g
                 Nothing -> do
-                  Affc.log $ "There is no asset group named '" <> name <> "'"
-                  Affc.log $ "Available groups are:"
+                  Affc.log $ "There is no channels named '" <> name <> "'"
+                  Affc.log $ "Available channels are:"
                   forM (groupNames groups) (\a -> Affc.log $ "  - " <> a)
                   liftEff $ exit 1
             (Many groupNames) -> do
@@ -110,13 +110,13 @@ main = void $ do
     setup =
       defaultVersion <>
       usage "\n  $0 [-i name] [-m]\n \n Before using, you should create project-assets.yml file in project root and use $0 anywhere above it." <>
-      example "$0" "list all assets in all groups" <>
-      example "$0 -m" "show missing assets in all groups" <>
-      example "$0 -i production" "list all assets in the 'production' group" <>
-      example "$0 -i production -i dev -m" "list all missing assets in the 'production' and 'dev' groups" <>
+      example "$0" "list all assets in all channels" <>
+      example "$0 -m" "show missing assets in all channels" <>
+      example "$0 -i production" "list all assets in the 'production' channel" <>
+      example "$0 -i production -i dev -m" "list all missing assets in the 'production' and 'dev' channels" <>
       defaultHelp
 
   runY setup $
-    app <$> yarg "i" ["in"]      (Just "One or more group names to inspect") (Left []) false
+    app <$> yarg "i" ["in"]      (Just "One or more channels names to inspect") (Left []) false
         <*> flag "m" ["missing"] (Just "Show only missing assets")
         <*> flag "c" ["create"] (Just "Create an example project-assets.yml file if one doesn't already exist")
