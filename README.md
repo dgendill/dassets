@@ -15,11 +15,11 @@ Projects deployed across multiple channels often require one-off assets for each
 2. Provide a command line interface that will answer these questions.
   1. What assets are required by a channel?
 
-    `dassets --in [channel name] --in [channel name]`
+     `dassets --in [channel name] --in [channel name]`
 
   2. Do all of the assets exist?  Were some files renamed or deleted?
 
-    `dassets --in [channel name] --missing`
+     `dassets --in [channel name] --missing`
 
 3. Enable installation via a global npm package.
 
