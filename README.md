@@ -1,6 +1,6 @@
 ## dassets
 
-Projects deployed across multiple channels often require one-off assets for each channel.  For example, a game could be distributed on a website, on Android, or as a Facebook app.  As the number of distribution channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize files and determine if any are missing.
+Projects deployed across multiple channels often require one-off assets for each channel.  For example, a game could be distributed on a website, on Android, or as a Facebook app.  As the number of distribution channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line tool is intended to help organize files and determine if any are missing.
 
 * [Project Goals](#project-goals)
 * [Install](#install)
@@ -13,10 +13,14 @@ Projects deployed across multiple channels often require one-off assets for each
 1. Define a configuration file for listing project assets and grouping them by channel name.
 
 2. Provide a command line interface that will answer these questions.
-  * What assets are required by a channel?
+  1. What assets are required by a channel?
+
     `dassets --in [channel name] --in [channel name]`
-  * Do all of the assets exist?  Where some files renamed or deleted?
+
+  2. Do all of the assets exist?  Were some files renamed or deleted?
+
     `dassets --in [channel name] --missing`
+
 3. Enable installation via a global npm package.
 
 ## Install
