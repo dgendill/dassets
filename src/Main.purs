@@ -9,7 +9,7 @@ import Data.StrMap as StrMap
 import Node.FS as FS
 import Node.FS.Async as Async
 import Control.Alt ((<|>))
-import Control.Alternative (empty)
+import Control.Alternative (empty, when)
 import Control.Lazy (defer)
 import Control.Monad.Aff (Aff, attempt, launchAff, makeAff, runAff)
 import Control.Monad.Aff.Class (liftAff)
@@ -36,114 +36,87 @@ import Data.StrMap (StrMap)
 import Data.Traversable (traverse)
 import Data.YAML.Foreign.Decode (parseYAML)
 import Data.YAML.Foreign.Encode (class ToYAML, printYAML, toYAML, valueToYAML, YObject, YValue(..))
+import Node.Encoding (Encoding(..))
 import Node.FS.Aff (stat, FS)
+import Node.FS.Stream (createWriteStream)
+import Node.FS.Sync (exists)
 import Node.Process (PROCESS, exit)
+import Node.Stream (uncork, writeString)
 import Node.Yargs (Yargs)
 import Node.Yargs.Applicative (Y, flag, rest, runY, yarg)
-import Node.Yargs.Setup (YargsSetup, example, usage, string)
+import Node.Yargs.Setup (YargsSetup, defaultHelp, defaultVersion, example, string, usage, version)
 import Partial.Unsafe (unsafePartial)
 import Util.General (forM)
--- import Test.Main as Test
-
-setup :: String
-setup = """
-  - shared
-  - personal
-  - advertising
-  - android
-"""
-
-readAssets :: F (Array String)
-readAssets = (traverse readString) =<< readArray =<< parseYAML setup
-
 
 data Which = All | One String | Many (Array String)
 
--- l :: List (Array Int)
--- l = defer (\_ -> singleton [1,2,55])
+exampleConfig :: String
+exampleConfig = """
+- name: development
+  paths:
+    - development.html
+- name: production
+  paths:
+    - production.html
+    - credentials/auth.json
+"""
 
--- some :: forall f a. Alternative f => Lazy (f (Array a)) => f a -> f (Array a)
---
--- some accepts an f a where f has an alternative and lazy instance.  The only one I can think
--- of that would be relevant is List.  So I'm going to pass a List Int to `some`, and somehow I
--- get back List (Array Int).  How do I determine how some
---
--- How do I use Array.some.  All of the examples I've found are used in conjunction with a Parser.
--- The end goal is to implement a lazy `contains` function for arrays.  e.g.
---
--- [1,2,3,4,5] `contains`
+app :: forall e. Array String -> Boolean -> Boolean -> Eff (process :: PROCESS, fs :: FS, console :: CONSOLE, exception :: EXCEPTION, exception :: EXCEPTION, fs :: FS | e) Unit
+app names onlyDeleted generate = case generate of
+  true -> do
+    e <- exists "project-assets.yml"
+    case e of
+      true -> log "project-assets.yml already exists."
+      false -> do
+        createWriteStream "project-assets.yml" >>=
+        (\s -> writeString s UTF8 exampleConfig (uncork s)) >>=
+        (\result -> case result of
+          true -> log "project-assets.yml successfully created."
+          false -> log "project-assets.yml could not be created."
+        )
+  false -> do
+    void $ launchAff $ do
+      let
+        which = case (length names) of
+          0 -> All
+          1 -> One $ unsafePartial (PartialArray.head names)
+          _ -> Many names
 
---
--- l :: List Int
--- l = fromFoldable [1,2,3,4,5,6]
---
--- firstGtThan :: Int -> Maybe Int
--- firstGtThan v = do
---   a <- some (Just 5)
---   if (a > 11)
---     then pure 5
---     else empty
+      attempt getUserAssets >>= case _ of
+        Right groups ->
+          case which of
+            All -> do
+              listAll onlyDeleted groups
+            (One name) -> do
+              let g = filter (\a -> (groupName a) == name) groups
+              case head $ filter (\a -> (groupName a) == name) groups of -- (\(AssetGroup r) -> (r.name == groupName)) groups of
+                Just a -> listAll onlyDeleted g
+                Nothing -> do
+                  Affc.log $ "There is no asset group named '" <> name <> "'"
+                  Affc.log $ "Available groups are:"
+                  forM (groupNames groups) (\a -> Affc.log $ "  - " <> a)
+                  liftEff $ exit 1
+            (Many groupNames) -> do
+              listAll onlyDeleted $ filter (\(AssetGroup group) ->
+                maybe false (const true) (find (eq group.name) groupNames)
+              ) groups
 
-app :: forall e. Array String -> Boolean -> Eff (process :: PROCESS, fs :: FS, console :: CONSOLE, exception :: EXCEPTION, exception :: EXCEPTION, fs :: FS | e) Unit
-app names onlyDeleted = void $ launchAff $ do -- runAff logShow logShow $ do
-  let
-    which = case (length names) of
-      0 -> All
-      1 -> One $ unsafePartial (PartialArray.head names)
-      _ -> Many names
+        Left err -> do
+          Affc.log $ message err --"Could not find project-assets.yml file.  Run `assets -c` to create a new one."
 
-  attempt getUserAssets >>= case _ of
-    Right groups ->
-      case which of
-        All -> do
-          listAll onlyDeleted groups
-        (One name) -> do
-          let g = filter (\a -> (groupName a) == name) groups
-          case head $ filter (\a -> (groupName a) == name) groups of -- (\(AssetGroup r) -> (r.name == groupName)) groups of
-            Just a -> listAll onlyDeleted g
-            Nothing -> do
-              Affc.log $ "There is no asset group named '" <> name <> "'"
-              Affc.log $ "Available groups are:"
-              forM (groupNames groups) (\a -> Affc.log $ "  - " <> a)
-              liftEff $ exit 1
-        (Many groupNames) -> do
-          listAll onlyDeleted $ filter (\(AssetGroup group) ->
-            maybe false (const true) (find (eq group.name) groupNames)
-          ) groups
-
-    Left err -> do
-      Affc.log $ message err
-
-
-testt :: forall a. Array Foreign -> Array String
-testt a = case runExcept (traverse readString a) of
-  Left _ -> []
-  Right a -> a
-
--- readWhich :: Foreign -> F Which
--- readWhich f = readString >>= (case _ of
---   "")
---
--- instance argWhich :: Arg Which where
---   arg key = Y { setup: string key
---               , read: readOneOrMany readWhich key
---               }
-
+main :: Eff (process :: PROCESS, fs :: FS, console :: CONSOLE, exception :: EXCEPTION, exception :: EXCEPTION, fs :: FS) Unit
 main = void $ do
   let
     setup =
-      usage "$0" <>
-      example "$0 -l" "list all assets in all groups"
+      defaultVersion <>
+      usage "\n  $0 [-i name] [-m]\n \n Before using, you should create project-assets.yml file in project root and use $0 anywhere above it." <>
+      example "$0" "list all assets in all groups" <>
+      example "$0 -m" "show missing assets in all groups" <>
+      example "$0 -i production" "list all assets in the 'production' group" <>
+      example "$0 -i production -i dev -m" "list all missing assets in the 'production' and 'dev' groups" <>
+      defaultHelp
 
   runY setup $
-    app <$> yarg "i" ["in"]      (Just "The group name to inspect") (Left []) false --yarg "i" ["in"] (Nothing) (Left []) false)
-        <*> flag "m" ["missing"] (Just "Show only missing assets") -- (Left "") false --yarg "i" ["in"] (Nothing) (Left []) false)
-
-    -- app <$> yarg "w" ["word"] (Just "A word") (Right "At least one word is required") false
-    --     <*> flag "r" []       (Just "Reverse the words")
-
--- void $ launchAff $ do
-  -- listAll Test.tassets
-  -- (runExcept readAssets) # either
-  --   logShow
-  --   logShow
+    app <$> yarg "i" ["in"]      (Just "One or more group names to inspect") (Left []) false
+        <*> flag "m" ["missing"] (Just "Show only missing assets")
+        <*> flag "c" ["create"] (Just "Create an example project-assets.yml file if one doesn't already exist")

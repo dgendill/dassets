@@ -1,9 +1,9 @@
 {
   "name": "assets",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "t.js",
+  "main": "command.js",
   "directories": {
     "test": "test"
   },
@@ -20,7 +20,7 @@
     "watch": "ls | entr node command.js"
   },
   "bin": {
-    "assets": "command.sh"
+    "assets": "command.js"
   },
   "author": "Dominick Gendill",
   "license": "MIT"
