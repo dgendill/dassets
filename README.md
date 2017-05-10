@@ -67,4 +67,4 @@ dassets -i production -i dev -m  list all missing assets in the
 
 ## Screenshot
 
-![./images/screenshot.jpg]
+![screenshot](./images/screenshot.jpg)
