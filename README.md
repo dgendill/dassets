@@ -1,11 +1,12 @@
 ## dassets
 
-Projects deployed across multiple channels often require one-off assets for each channel.  For example, game could be distributed on a website, on Android, or as a Facebook app.  As the number of distribution channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize files and determine if any are missing.
+Projects deployed across multiple channels often require one-off assets for each channel.  For example, a game could be distributed on a website, on Android, or as a Facebook app.  As the number of distribution channels increases, it becomes difficult to remember which project assets are meant to be copied to which channel.  This command line is intended to help organize files and determine if any are missing.
 
 * [Project Goals](#project-goals)
 * [Install](#install)
 * [project-assets.yml](#project-assets-yml)
 * [Command Line Referrence](#command-line-reference)
+* [Screenshot](#screenshot)
 
 ## Project Goals
 
@@ -63,3 +64,7 @@ dassets -i production            list all assets in the 'production' channel
 dassets -i production -i dev -m  list all missing assets in the
                                  'production' and 'dev' channels
 ```
+
+## Screenshot
+
+![./images/screenshot.jpg]

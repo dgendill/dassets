@@ -5,8 +5,8 @@
   paths:
     - test/files/images
     - test/files/js
-    - test/files/onetwo
-- name: shared
+    - test/files/config.json
+- name: dev
   paths:
     - test/files/images
     - test/files/js

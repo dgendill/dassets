@@ -21,7 +21,7 @@
     "watch": "ls | entr node command.js"
   },
   "bin": {
-    "assets": "dassets.js"
+    "dassets": "dassets.js"
   },
   "author": {
     "name": "Dominick Gendill",
