@@ -2,13 +2,10 @@
   "name": "assets",
   "private": true,
   "version": "0.1.0",
-  "description": "",
+  "description": "Command line tool to track list of files and directories grouped by name, and determine if any are missing.",
   "main": "command.js",
-  "directories": {
-    "test": "test"
-  },
+  "directories": {},
   "dependencies": {
-    "glob": "^7.1.1",
     "js-yaml": "^3.8.3",
     "yargs": "^8.0.1"
   },
