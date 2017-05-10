@@ -25,6 +25,8 @@ Projects that are deployed across different channels often require one-off asset
 
 `npm install -g dassets`
 
+You can also checkout the repo and then run 'npm install -g' in the project root.
+
 ## project-assets.yml
 
 The project-assets.yml file should contain a list of objects that have "name" and "paths" properties. `name` is a string, and

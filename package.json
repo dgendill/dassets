@@ -1,8 +1,12 @@
 {
   "name": "dassets",
-  "private": true,
   "version": "0.1.0",
   "description": "Command line tool to group lists of files and directories by name and determine if any are missing.",
+  "keywords": "asset manager file directory tracking exists",
+  "homepage": "https://www.dgendill.com",
+  "bugs" : {
+    "url" : "https://github.com/dgendill/dassets/issues"
+  },
   "main": "dassets.js",
   "directories": {},
   "dependencies": {
@@ -19,6 +23,18 @@
   "bin": {
     "assets": "dassets.js"
   },
-  "author": "Dominick Gendill",
+  "author": {
+    "name": "Dominick Gendill",
+    "url": "https://www.dgendill.com"
+  },
+  "files": [
+    "dassets.js",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dgendill/dassets.git"
+  },
+  "engines" : { "node" : ">=7.7.4" },
   "license": "MIT"
 }
